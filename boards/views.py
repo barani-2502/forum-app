@@ -38,7 +38,6 @@ def new_topic(request, pk):
         form = NewTopicForm()
 
     return render(request, 'new_topic.html', {'board': board, 'form': form})
-
 @login_required
 def reply_topic(request, pk, topic_pk):
     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
