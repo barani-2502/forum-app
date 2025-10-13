@@ -38,6 +38,7 @@ def new_topic(request, pk):
         form = NewTopicForm()
 
     return render(request, 'new_topic.html', {'board': board, 'form': form})
+
 @login_required
 def reply_topic(request, pk, topic_pk):
     topic = get_object_or_404(Topic, board__pk=pk, pk=topic_pk)
@@ -48,6 +49,10 @@ def reply_topic(request, pk, topic_pk):
             post.topic = topic
             post.created_by = request.user
             post.save()
+
+            topic.last_updated = timezone.now()
+            topic.save()
+
             return redirect('topic_posts', pk=pk, topic_pk=topic_pk)
         
     else:
@@ -93,7 +98,7 @@ class PostListView(ListView):
     model = Post
     context_object_name = 'posts'
     template_name = 'topic_posts.html'
-    paginate_by = 2
+    paginate_by = 20
 
     def get_context_data(self, **kwargs):
         self.topic.views += 1
